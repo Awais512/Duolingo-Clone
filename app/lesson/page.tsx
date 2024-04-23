@@ -1,6 +1,8 @@
+import React from "react";
+
 import { getLesson, getUserProgress } from "@/db/queries";
 import { redirect } from "next/navigation";
-import React from "react";
+
 import { Quiz } from "./quiz";
 
 const LessonPage = async () => {
@@ -23,7 +25,7 @@ const LessonPage = async () => {
 
   return (
     <Quiz
-      lessonId={lesson.id}
+      initialLessonId={lesson.id}
       initialLessonChallenges={lesson.challenges}
       initialHearts={userProgress.hearts}
       initialPercentage={initialPercentage}
