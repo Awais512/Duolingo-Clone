@@ -212,25 +212,6 @@ export const getLessonPercentage = cache(async () => {
   return percentage;
 });
 
-// export const getUserSubscription = cache(async () => {
-//   const { userId } = await auth();
-//   if (!userId) return null;
-
-//   const data = await db.query.userSubscription.findFirst({
-//     where: eq(userSubscription.userId, userId),
-//   });
-//   if (!data) return null;
-
-//   const isActive =
-//     data.stripePriceId &&
-//     data.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now();
-
-//   return {
-//     ...data,
-//     isActive: !!isActive,
-//   };
-// });
-
 export const getUserSubscription = cache(async () => {
   const { userId } = await auth();
   if (!userId) return null;
@@ -246,4 +227,23 @@ export const getUserSubscription = cache(async () => {
     data.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now();
 
   return { ...data, isActive: !!isActive };
+});
+
+export const getTopTenUsers = cache(async () => {
+  const { userId } = await auth();
+  if (!userId) {
+    return [];
+  }
+  const data = await db.query.userProgress.findMany({
+    orderBy: (userProgress, { desc }) => [desc(userProgress.points)],
+    limit: 10,
+    columns: {
+      userId: true,
+      userName: true,
+      userImageSrc: true,
+      points: true,
+    },
+  });
+
+  return data;
 });
